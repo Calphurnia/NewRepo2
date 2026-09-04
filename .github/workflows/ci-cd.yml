@@ -1,0 +1,60 @@
+name: RaceDay CI/CD
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+jobs:
+  validate-raceday:
+    name: Validate RaceDay Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Check required files
+        run: |
+          echo "Checking RaceDay project files..."
+          test -f "RaceDay_Database_Script.sql" || {
+            echo "ERROR: RaceDay_Database_Script.sql not found"
+            exit 1
+          }
+          test -f "RaceDay API Endpoint Plan.docx" || {
+            echo "ERROR: RaceDay API Endpoint Plan.docx not found"
+            exit 1
+          }
+          test -f "RaceDay_ERD.drawio.png" || {
+            echo "ERROR: RaceDay_ERD.drawio.png not found"
+            exit 1
+          }
+          echo "All required RaceDay files are present."
+      - name: Validate SQL file
+        run: |
+          echo "Checking SQL script..."
+          test -s "RaceDay_Database_Script.sql" || {
+            echo "ERROR: SQL script is empty"
+            exit 1
+          }
+          echo "SQL script exists and is not empty."
+      - name: Validate documentation
+        run: |
+          echo "Checking API documentation..."
+          test -s "RaceDay API Endpoint Plan.docx" || {
+            echo "ERROR: API documentation is empty"
+            exit 1
+          }
+          echo "API documentation is present."
+      - name: Validate ERD
+        run: |
+          echo "Checking ERD..."
+          test -s "RaceDay_ERD.drawio.png" || {
+            echo "ERROR: ERD file is empty"
+            exit 1
+          }
+          echo "ERD is present."
+      - name: CI validation successful
+        run: |
+          echo "RaceDay CI validation completed successfully."
